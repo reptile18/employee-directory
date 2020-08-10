@@ -11,11 +11,28 @@ export default class EmployeeTable extends React.Component {
     sortDir: "up"
   }
   componentDidMount() {
-    axios.get('https://randomuser.me/api/?results=100&nat=us').then(res => {
-      this.setState({ employees: res.data.results.map((employee,index) => {
-        return {...employee, index} 
+    this.getEmployees();
+    axios.get(`https://randomuser.me/api/?results=${this.props.count}&nat=us`).then(res => {
+      this.setState({
+        employees: res.data.results.map((employee, index) => {
+          return { ...employee, index }
+        })
       })
-    }) 
+    })
+  }
+  componentDidUpdate(prevProps) {
+    if (prevProps.count !== this.props.count) {
+      this.getEmployees();
+    }
+  }
+  getEmployees() {
+    console.log("am I in here at all?")
+    axios.get(`https://randomuser.me/api/?results=${this.props.count}&nat=us`).then(res => {
+      this.setState({
+        employees: res.data.results.map((employee, index) => {
+          return { ...employee, index }
+        })
+      })
     })
   }
   stateToStateCode(state) {
@@ -144,11 +161,11 @@ export default class EmployeeTable extends React.Component {
         this.setState({ sortDir: "up", sortBy: "" })
       }
       else {
-        this.setState({ sortDir: "down"})
+        this.setState({ sortDir: "down" })
       }
     }
     else {
-      this.setState({sortBy: key,sortDir: "up" });
+      this.setState({ sortBy: key, sortDir: "up" });
     }
   }
   isSortedBy(key) {
@@ -157,8 +174,8 @@ export default class EmployeeTable extends React.Component {
   sortBy = (firstEmp, secondEmp) => {
     const sortKey = this.state.sortBy;
     const posDot = sortKey.indexOf('.');
-    const firstKey = sortKey.substring(0,posDot);
-    const secondKey = sortKey.substring(posDot+1,sortKey.length);
+    const firstKey = sortKey.substring(0, posDot);
+    const secondKey = sortKey.substring(posDot + 1, sortKey.length);
     if (this.state.sortBy === "") {
       return firstEmp.index - secondEmp.index;
     }
@@ -176,36 +193,35 @@ export default class EmployeeTable extends React.Component {
         employee.location.city.includes(this.props.filter) ||
         employee.location.state.includes(this.props.filter) ||
         this.stateToStateCode(employee.location.state).includes(this.props.filter)
-        )
-      {
+      ) {
         return true;
       }
       else {
         return false;
       }
     }).sort(this.sortBy)
-    .map((employee,index) => {
-      return (
-        <EmployeeRow
-          key={index}
-          number={index+1}
-          photo={employee.picture.thumbnail}
-          lastName={employee.name.last}
-          firstName={employee.name.first}
-          phone={employee.phone}
-          cell={employee.cell}
-          email={employee.email}
-          city={employee.location.city}
-          stateCode={this.stateToStateCode(employee.location.state)}
-        ></EmployeeRow>
-      )
-    });
+      .map((employee, index) => {
+        return (
+          <EmployeeRow
+            key={index}
+            number={index + 1}
+            photo={employee.picture.thumbnail}
+            lastName={employee.name.last}
+            firstName={employee.name.first}
+            phone={employee.phone}
+            cell={employee.cell}
+            email={employee.email}
+            city={employee.location.city}
+            stateCode={this.stateToStateCode(employee.location.state)}
+          ></EmployeeRow>
+        )
+      });
   }
   render() {
     return (
       <div>
         <table className="table table-hover">
-          <caption>Filtered on '{this.props.filter}'</caption>
+          <caption>Showing {this.props.count} results filtered on '{this.props.filter}'</caption>
           <thead>
             <tr>
               <th scope="col">#</th>

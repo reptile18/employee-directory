@@ -16,10 +16,23 @@ const styles = {
 
 export default class EmployeeDirectory extends React.Component {
   state = {
-    filter: ""
+    filter: "",
+    count: 50
   }
   filterTo = (event) => {
     this.setState({filter: event.target.value});
+  }
+  setCount = (count) => {
+    this.setState({count: count});
+  }
+  renderCountButton(count) {
+    return (
+      <button 
+        type="button" 
+        className={`btn btn-outline-secondary ${this.state.count === count? "active": ""}`}
+        onClick={() => this.setCount(count)}
+      >{count}</button>
+    )
   }
   render() {
     return (
@@ -31,9 +44,16 @@ export default class EmployeeDirectory extends React.Component {
           <div className="d-flex justify-content-md-end mb-3">
             <EmployeeSearch onChange={this.filterTo} />
           </div>
+          <div className="d-flex justify-content-md-end mb-3">
+            <span>Display 
+            <div className="btn-group mx-2">
+              {[25,50,100,200].map((count) => this.renderCountButton(count))}
+            </div>
+             results</span>
+          </div>
           <div className="row">
             <div className="col-12">
-              <EmployeeTable filter={this.state.filter}/>
+              <EmployeeTable filter={this.state.filter} count={this.state.count} />
             </div>
           </div>
         </div>
