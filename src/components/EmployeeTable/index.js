@@ -2,10 +2,13 @@ import React from 'react';
 import axios from 'axios';
 
 import EmployeeRow from '../EmployeeRow';
+import EmployeeSortableColumn from '../EmployeeSortableColumn';
 
 export default class EmployeeTable extends React.Component {
   state = {
-    employees: []
+    employees: [],
+    sortBy: "",
+    sortDir: "up"
   }
   componentDidMount() {
     axios.get('https://randomuser.me/api/?results=50&nat=us').then(res => {
@@ -132,30 +135,25 @@ export default class EmployeeTable extends React.Component {
         return ''
     }
   }
-  filter() {
-    if (this.state.employees) {
-      return this.state.employees.filter(employee => {
-        if (employee.lastName.includes(this.props.filter) ||
-          employee.firstName.includes(this.props.filter) ||
-          employee.city.includes(this.props.filter) ||
-          employee.state.includes(this.props.filter) ||
-          this.stateToStateCode(employee.state).includes(this.props.filter)
-          )
-        {
-          return true;
-        }
-        else {
-          return false;
-        }
-      });
+  setSortBy = (key) => {
+    if (this.state.sortBy === key) {
+      if (this.state.sortDir === "up") {
+        this.setState({ sortDir: "up", sortBy: "" })
+      }
+      else {
+        this.setState({ sortDir: "up" })
+      }
     }
     else {
-      return [];
+      this.setState({sortBy: key});
+      this.setState({sortDir: "down"});
     }
+  }
+  isSortedBy(key) {
+    return this.state.sortBy === key;
   }
   renderRows() {
     return this.state.employees.filter(employee => {
-      console.log(employee);
       if (employee.name.last.includes(this.props.filter) ||
         employee.name.first.includes(this.props.filter) ||
         employee.location.city.includes(this.props.filter) ||
@@ -194,12 +192,30 @@ export default class EmployeeTable extends React.Component {
             <tr>
               <th scope="col">#</th>
               <th scope="col">Photo</th>
-              <th scope="col">Last Name</th>
-              <th scope="col">First Name</th>
+              <EmployeeSortableColumn
+                columnKey="lname"
+                label="Last Name"
+                sorted={this.isSortedBy("lname")}
+                sortDir={this.state.sortDir}
+                onSort={this.setSortBy}
+              />
+              <EmployeeSortableColumn
+                columnKey="fname"
+                label="First Name"
+                sorted={this.isSortedBy("fname")}
+                sortDir={this.state.sortDir}
+                onSort={this.setSortBy}
+              />
               <th scope="col">Phone</th>
               <th scope="col">Cell</th>
               <th scope="col">Email</th>
-              <th scope="col">City</th>
+              <EmployeeSortableColumn
+                columnKey="city"
+                label="City"
+                sorted={this.isSortedBy("city")}
+                sortDir={this.state.sortDir}
+                onSort={this.setSortBy}
+              />
             </tr>
           </thead>
           <tbody>
