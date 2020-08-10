@@ -11,8 +11,11 @@ export default class EmployeeTable extends React.Component {
     sortDir: "up"
   }
   componentDidMount() {
-    axios.get('https://randomuser.me/api/?results=50&nat=us').then(res => {
-      this.setState({ employees: res.data.results });
+    axios.get('https://randomuser.me/api/?results=5&nat=us').then(res => {
+      this.setState({ employees: res.data.results.map((employee,index) => {
+        return {...employee, index} 
+      })
+    }) 
     })
   }
   stateToStateCode(state) {
@@ -137,20 +140,34 @@ export default class EmployeeTable extends React.Component {
   }
   setSortBy = (key) => {
     if (this.state.sortBy === key) {
-      if (this.state.sortDir === "up") {
+      if (this.state.sortDir === "down") {
         this.setState({ sortDir: "up", sortBy: "" })
       }
       else {
-        this.setState({ sortDir: "up" })
+        this.setState({ sortDir: "down"})
       }
     }
     else {
-      this.setState({sortBy: key});
-      this.setState({sortDir: "down"});
+      this.setState({sortBy: key,sortDir: "up" });
     }
   }
   isSortedBy(key) {
     return this.state.sortBy === key;
+  }
+  sortBy = (firstEmp, secondEmp) => {
+    const sortKey = this.state.sortBy;
+    const posDot = sortKey.indexOf('.');
+    const firstKey = sortKey.substring(0,posDot);
+    const secondKey = sortKey.substring(posDot+1,sortKey.length);
+    if (this.state.sortBy === "") {
+      return firstEmp.index - secondEmp.index;
+    }
+    if (this.state.sortDir === "up") {
+      return firstEmp[firstKey][secondKey].localeCompare(secondEmp[firstKey][secondKey]);
+    }
+    else {
+      return secondEmp[firstKey][secondKey].localeCompare(firstEmp[firstKey][secondKey]);
+    }
   }
   renderRows() {
     return this.state.employees.filter(employee => {
@@ -166,7 +183,8 @@ export default class EmployeeTable extends React.Component {
       else {
         return false;
       }
-    }).map((employee,index) => {
+    }).sort(this.sortBy)
+    .map((employee,index) => {
       return (
         <EmployeeRow
           key={index}
@@ -193,16 +211,16 @@ export default class EmployeeTable extends React.Component {
               <th scope="col">#</th>
               <th scope="col">Photo</th>
               <EmployeeSortableColumn
-                columnKey="lname"
+                columnKey="name.last"
                 label="Last Name"
-                sorted={this.isSortedBy("lname")}
+                sorted={this.isSortedBy("name.last")}
                 sortDir={this.state.sortDir}
                 onSort={this.setSortBy}
               />
               <EmployeeSortableColumn
-                columnKey="fname"
+                columnKey="name.first"
                 label="First Name"
-                sorted={this.isSortedBy("fname")}
+                sorted={this.isSortedBy("name.first")}
                 sortDir={this.state.sortDir}
                 onSort={this.setSortBy}
               />
@@ -210,9 +228,9 @@ export default class EmployeeTable extends React.Component {
               <th scope="col">Cell</th>
               <th scope="col">Email</th>
               <EmployeeSortableColumn
-                columnKey="city"
+                columnKey="location.city"
                 label="City"
-                sorted={this.isSortedBy("city")}
+                sorted={this.isSortedBy("location.city")}
                 sortDir={this.state.sortDir}
                 onSort={this.setSortBy}
               />
