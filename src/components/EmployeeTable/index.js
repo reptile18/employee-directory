@@ -11,7 +11,7 @@ export default class EmployeeTable extends React.Component {
     sortDir: "up"
   }
   componentDidMount() {
-    axios.get('https://randomuser.me/api/?results=5&nat=us').then(res => {
+    axios.get('https://randomuser.me/api/?results=100&nat=us').then(res => {
       this.setState({ employees: res.data.results.map((employee,index) => {
         return {...employee, index} 
       })

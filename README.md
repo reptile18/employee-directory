@@ -1,4 +1,22 @@
+# Employee Directory
+
+![Employee Directory](assets/img/screenshot.png)
+
+React application showcasing an employee directory. Available features include listing, sorting, and filtering.
+
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
+## Usage
+
+After launching the application per instructions below, verify that you see a jumbotron with the name `Employee Directory`. A table lists the columns #, Photo, Last Name, First Name, Phone, Cell, Email, and City.
+
+Verify that typing into the search box correctly filters the list of employees by their name, city, or state.
+
+Verify that clicking once on any of the columns Last Name, First Name, or City correctly sorts those columns in ascending order.
+
+Verify that click a second time on any of the columns Last Name, First Name, or City correctly sorts those columns in descending order.
+
+Verify that clicking a third time on any of the columns Last Name, First Name, or City correctly turns off sorting.
 
 ## Available Scripts
 
