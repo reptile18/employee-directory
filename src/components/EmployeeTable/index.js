@@ -8,7 +8,7 @@ export default class EmployeeTable extends React.Component {
     employees: []
   }
   componentDidMount() {
-    axios.get('https://randomuser.me/api/?results=200&nat=us').then(res => {
+    axios.get('https://randomuser.me/api/?results=50&nat=us').then(res => {
       this.setState({ employees: res.data.results });
     })
   }
@@ -132,12 +132,46 @@ export default class EmployeeTable extends React.Component {
         return ''
     }
   }
+  filter() {
+    if (this.state.employees) {
+      return this.state.employees.filter(employee => {
+        if (employee.lastName.includes(this.props.filter) ||
+          employee.firstName.includes(this.props.filter) ||
+          employee.city.includes(this.props.filter) ||
+          employee.state.includes(this.props.filter) ||
+          this.stateToStateCode(employee.state).includes(this.props.filter)
+          )
+        {
+          return true;
+        }
+        else {
+          return false;
+        }
+      });
+    }
+    else {
+      return [];
+    }
+  }
   renderRows() {
-    console.log("employees", typeof this.state.employees, typeof this.state.employees)
-    return this.state.employees.map((employee,index) => {
+    return this.state.employees.filter(employee => {
       console.log(employee);
+      if (employee.name.last.includes(this.props.filter) ||
+        employee.name.first.includes(this.props.filter) ||
+        employee.location.city.includes(this.props.filter) ||
+        employee.location.state.includes(this.props.filter) ||
+        this.stateToStateCode(employee.location.state).includes(this.props.filter)
+        )
+      {
+        return true;
+      }
+      else {
+        return false;
+      }
+    }).map((employee,index) => {
       return (
         <EmployeeRow
+          key={index}
           number={index+1}
           photo={employee.picture.thumbnail}
           lastName={employee.name.last}
@@ -155,6 +189,7 @@ export default class EmployeeTable extends React.Component {
     return (
       <div>
         <table className="table table-hover">
+          <caption>Filtered on '{this.props.filter}'</caption>
           <thead>
             <tr>
               <th scope="col">#</th>

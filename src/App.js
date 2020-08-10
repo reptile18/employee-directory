@@ -1,11 +1,11 @@
 import React from 'react';
 import './App.css';
-import EmployeeTable from './components/EmployeeTable';
+import EmployeeDirectory from './components/EmployeeDirectory';
 
 function App() {
   return (
     <div className="App">
-      <EmployeeTable />
+      <EmployeeDirectory />
     </div>
   );
 }

@@ -4,7 +4,7 @@ function EmployeeRow(props) {
   return (
     <tr>
       <th scope="row">{props.number}</th>
-      <td>{props.photo}</td>
+      <td><img className="thumbnail" src={props.photo} alt={`${props.firstName} ${props.lastName}`}></img></td>
       <td>{props.lastName}</td>
       <td>{props.firstName}</td>
       <td>{props.phone}</td>
