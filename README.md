@@ -18,6 +18,8 @@ Verify that click a second time on any of the columns Last Name, First Name, or 
 
 Verify that clicking a third time on any of the columns Last Name, First Name, or City correctly turns off sorting.
 
+Verify that clicking the `Display 25|50|100|200 Results` button group correctly changes the number of employees loaded. 
+
 ## Available Scripts
 
 In the project directory, you can run:
