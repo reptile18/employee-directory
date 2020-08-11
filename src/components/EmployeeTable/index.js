@@ -26,7 +26,6 @@ export default class EmployeeTable extends React.Component {
     }
   }
   getEmployees() {
-    console.log("am I in here at all?")
     axios.get(`https://randomuser.me/api/?results=${this.props.count}&nat=us`).then(res => {
       this.setState({
         employees: res.data.results.map((employee, index) => {
@@ -219,13 +218,13 @@ export default class EmployeeTable extends React.Component {
   }
   render() {
     return (
-      <div>
+      <div className="container">
         <table className="table table-hover">
           <caption>Showing {this.props.count} results filtered on '{this.props.filter}'</caption>
           <thead>
             <tr>
               <th scope="col">#</th>
-              <th scope="col">Photo</th>
+              <th scope="col" className="d-none d-xl-table-cell">Photo</th>
               <EmployeeSortableColumn
                 columnKey="name.last"
                 label="Last Name"
@@ -240,9 +239,9 @@ export default class EmployeeTable extends React.Component {
                 sortDir={this.state.sortDir}
                 onSort={this.setSortBy}
               />
-              <th scope="col">Phone</th>
-              <th scope="col">Cell</th>
-              <th scope="col">Email</th>
+              <th scope="col" className="d-none d-md-table-cell">Phone</th>
+              <th scope="col" className="d-none d-lg-table-cell">Cell</th>
+              <th scope="col" className="d-none d-xl-table-cell">Email</th>
               <EmployeeSortableColumn
                 columnKey="location.city"
                 label="City"

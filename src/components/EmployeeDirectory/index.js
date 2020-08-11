@@ -28,6 +28,7 @@ export default class EmployeeDirectory extends React.Component {
   renderCountButton(count) {
     return (
       <button 
+        key={count}
         type="button" 
         className={`btn btn-outline-secondary ${this.state.count === count? "active": ""}`}
         onClick={() => this.setCount(count)}
@@ -37,14 +38,14 @@ export default class EmployeeDirectory extends React.Component {
   render() {
     return (
       <div>
-        <div className="jumbotron" style={styles.jumbotron}>
+        <div className="jumbotron jumbotron-fluid" style={styles.jumbotron}>
           <h1 className="text-dark" style={styles.jumboHeader}>Employee Directory</h1>
         </div>
         <div className="container">
-          <div className="d-flex justify-content-md-end mb-3">
+          <div className="d-flex justify-content-end mb-3">
             <EmployeeSearch onChange={this.filterTo} />
           </div>
-          <div className="d-flex justify-content-md-end mb-3">
+          <div className="d-flex justify-content-end mb-3">
             <span>Display 
             <div className="btn-group mx-2">
               {[25,50,100,200].map((count) => this.renderCountButton(count))}
