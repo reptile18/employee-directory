@@ -22,6 +22,7 @@ export default class EmployeeTable extends React.Component {
   }
   componentDidUpdate(prevProps) {
     if (prevProps.count !== this.props.count) {
+      console.log("rerendering...")
       this.getEmployees();
     }
   }
@@ -187,11 +188,11 @@ export default class EmployeeTable extends React.Component {
   }
   renderRows() {
     return this.state.employees.filter(employee => {
-      if (employee.name.last.includes(this.props.filter) ||
-        employee.name.first.includes(this.props.filter) ||
-        employee.location.city.includes(this.props.filter) ||
-        employee.location.state.includes(this.props.filter) ||
-        this.stateToStateCode(employee.location.state).includes(this.props.filter)
+      if (employee.name.last.toLowerCase().includes(this.props.filter.toLowerCase()) ||
+        employee.name.first.toLowerCase().includes(this.props.filter.toLowerCase()) ||
+        employee.location.city.toLowerCase().includes(this.props.filter.toLowerCase()) ||
+        employee.location.state.toLowerCase().includes(this.props.filter.toLowerCase()) ||
+        this.stateToStateCode(employee.location.state).includes(this.props.filter.toUpperCase())
       ) {
         return true;
       }
