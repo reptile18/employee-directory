@@ -1,41 +1,22 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
 
 import EmployeeRow from '../EmployeeRow';
 import EmployeeSortableColumn from '../EmployeeSortableColumn';
 
-export default class EmployeeTable extends React.Component {
-  state = {
-    employees: [],
-    sortBy: "",
-    sortDir: "up"
-  }
-  componentDidMount() {
-    this.getEmployees();
-    axios.get(`https://randomuser.me/api/?results=${this.props.count}&nat=us`).then(res => {
-      this.setState({
-        employees: res.data.results.map((employee, index) => {
+function EmployeeTable(props) {
+  const [employees, setEmployees] = useState([]);
+  const [sortBy, setSortBy] = useState("");
+  const [sortDir, setSortDir] = useState("up");
+
+  useEffect(() => {
+    axios.get(`https://randomuser.me/api/?results=${props.count}&nat=us`).then(res => {
+      setEmployees(res.data.results.map((employee, index) => {
           return { ...employee, index }
-        })
-      })
+        }))
     })
-  }
-  componentDidUpdate(prevProps) {
-    if (prevProps.count !== this.props.count) {
-      console.log("rerendering...")
-      this.getEmployees();
-    }
-  }
-  getEmployees() {
-    axios.get(`https://randomuser.me/api/?results=${this.props.count}&nat=us`).then(res => {
-      this.setState({
-        employees: res.data.results.map((employee, index) => {
-          return { ...employee, index }
-        })
-      })
-    })
-  }
-  stateToStateCode(state) {
+  }, [props.count])
+  function stateToStateCode(state) {
     switch (state) {
       case 'Alabama':
         return 'AL'
@@ -155,51 +136,53 @@ export default class EmployeeTable extends React.Component {
         return ''
     }
   }
-  setSortBy = (key) => {
-    if (this.state.sortBy === key) {
-      if (this.state.sortDir === "down") {
-        this.setState({ sortDir: "up", sortBy: "" })
+  function setSort (key) {
+    if (sortBy === key) {
+      if (sortDir === "down") {
+        setSortBy("");
+        setSortDir("up");
       }
-      else {
-        this.setState({ sortDir: "down" })
+      else {;
+        setSortDir("down")
       }
     }
     else {
-      this.setState({ sortBy: key, sortDir: "up" });
+      setSortBy(key);
+      setSortDir("up");
     }
   }
-  isSortedBy(key) {
-    return this.state.sortBy === key;
+  function isSortedBy(key) {
+    return sortBy === key;
   }
-  sortBy = (firstEmp, secondEmp) => {
-    const sortKey = this.state.sortBy;
+  function sort (firstEmp, secondEmp) {
+    const sortKey = sortBy;
     const posDot = sortKey.indexOf('.');
     const firstKey = sortKey.substring(0, posDot);
     const secondKey = sortKey.substring(posDot + 1, sortKey.length);
-    if (this.state.sortBy === "") {
+    if (sortBy === "") {
       return firstEmp.index - secondEmp.index;
     }
-    if (this.state.sortDir === "up") {
+    if (sortDir === "up") {
       return firstEmp[firstKey][secondKey].localeCompare(secondEmp[firstKey][secondKey]);
     }
     else {
       return secondEmp[firstKey][secondKey].localeCompare(firstEmp[firstKey][secondKey]);
     }
   }
-  renderRows() {
-    return this.state.employees.filter(employee => {
-      if (employee.name.last.toLowerCase().includes(this.props.filter.toLowerCase()) ||
-        employee.name.first.toLowerCase().includes(this.props.filter.toLowerCase()) ||
-        employee.location.city.toLowerCase().includes(this.props.filter.toLowerCase()) ||
-        employee.location.state.toLowerCase().includes(this.props.filter.toLowerCase()) ||
-        this.stateToStateCode(employee.location.state).includes(this.props.filter.toUpperCase())
+  function renderRows() {
+    return employees.filter(employee => {
+      if (employee.name.last.toLowerCase().includes(props.filter.toLowerCase()) ||
+        employee.name.first.toLowerCase().includes(props.filter.toLowerCase()) ||
+        employee.location.city.toLowerCase().includes(props.filter.toLowerCase()) ||
+        employee.location.state.toLowerCase().includes(props.filter.toLowerCase()) ||
+        stateToStateCode(employee.location.state).includes(props.filter.toUpperCase())
       ) {
         return true;
       }
       else {
         return false;
       }
-    }).sort(this.sortBy)
+    }).sort(sort)
       .map((employee, index) => {
         return (
           <EmployeeRow
@@ -212,51 +195,50 @@ export default class EmployeeTable extends React.Component {
             cell={employee.cell}
             email={employee.email}
             city={employee.location.city}
-            stateCode={this.stateToStateCode(employee.location.state)}
+            stateCode={stateToStateCode(employee.location.state)}
           ></EmployeeRow>
         )
       });
   }
-  render() {
-    return (
-      <div className="container">
-        <table className="table table-hover">
-          <caption>Showing {this.props.count} results filtered on '{this.props.filter}'</caption>
-          <thead>
-            <tr>
-              <th scope="col">#</th>
-              <th scope="col" className="d-none d-xl-table-cell">Photo</th>
-              <EmployeeSortableColumn
-                columnKey="name.last"
-                label="Last&nbsp;Name"
-                sorted={this.isSortedBy("name.last")}
-                sortDir={this.state.sortDir}
-                onSort={this.setSortBy}
-              />
-              <EmployeeSortableColumn
-                columnKey="name.first"
-                label="First&nbsp;Name"
-                sorted={this.isSortedBy("name.first")}
-                sortDir={this.state.sortDir}
-                onSort={this.setSortBy}
-              />
-              <th scope="col" className="d-none d-md-table-cell">Phone</th>
-              <th scope="col" className="d-none d-lg-table-cell">Cell</th>
-              <th scope="col" className="d-none d-xl-table-cell">Email</th>
-              <EmployeeSortableColumn
-                columnKey="location.city"
-                label="City"
-                sorted={this.isSortedBy("location.city")}
-                sortDir={this.state.sortDir}
-                onSort={this.setSortBy}
-              />
-            </tr>
-          </thead>
-          <tbody>
-            {this.renderRows()}
-          </tbody>
-        </table>
-      </div>
-    )
-  }
+  return (
+    <div className="container">
+      <table className="table table-hover">
+        <caption>Showing {props.count} results filtered on '{props.filter}'</caption>
+        <thead>
+          <tr>
+            <th scope="col">#</th>
+            <th scope="col" className="d-none d-xl-table-cell">Photo</th>
+            <EmployeeSortableColumn
+              columnKey="name.last"
+              label="Last&nbsp;Name"
+              sorted={isSortedBy("name.last")}
+              sortDir={sortDir}
+              onSort={setSort}
+            />
+            <EmployeeSortableColumn
+              columnKey="name.first"
+              label="First&nbsp;Name"
+              sorted={isSortedBy("name.first")}
+              sortDir={sortDir}
+              onSort={setSort}
+            />
+            <th scope="col" className="d-none d-md-table-cell">Phone</th>
+            <th scope="col" className="d-none d-lg-table-cell">Cell</th>
+            <th scope="col" className="d-none d-xl-table-cell">Email</th>
+            <EmployeeSortableColumn
+              columnKey="location.city"
+              label="City"
+              sorted={isSortedBy("location.city")}
+              sortDir={sortDir}
+              onSort={setSort}
+            />
+          </tr>
+        </thead>
+        <tbody>
+          {renderRows()}
+        </tbody>
+      </table>
+    </div>
+  )
 }
+export default EmployeeTable
