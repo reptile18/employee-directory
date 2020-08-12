@@ -228,14 +228,14 @@ export default class EmployeeTable extends React.Component {
               <th scope="col" className="d-none d-xl-table-cell">Photo</th>
               <EmployeeSortableColumn
                 columnKey="name.last"
-                label="Last Name"
+                label="Last&nbsp;Name"
                 sorted={this.isSortedBy("name.last")}
                 sortDir={this.state.sortDir}
                 onSort={this.setSortBy}
               />
               <EmployeeSortableColumn
                 columnKey="name.first"
-                label="First Name"
+                label="First&nbsp;Name"
                 sorted={this.isSortedBy("name.first")}
                 sortDir={this.state.sortDir}
                 onSort={this.setSortBy}

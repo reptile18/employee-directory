@@ -33,7 +33,7 @@ export default class EmployeeSortableColumn extends React.Component {
         <span 
           className="sortableColumn"
           style={styles.unsortedColumn}
-        >{this.props.label} {this.sortIcon()}</span>
+        >{this.props.label}&nbsp;{this.sortIcon()}</span>
       </th>
     )
   }
