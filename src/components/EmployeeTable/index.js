@@ -187,7 +187,7 @@ function EmployeeTable(props) {
         return (
           <EmployeeRow
             key={index}
-            number={index + 1}
+            number={employee.index + 1}
             photo={employee.picture.thumbnail}
             lastName={employee.name.last}
             firstName={employee.name.first}
