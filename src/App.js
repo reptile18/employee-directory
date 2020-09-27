@@ -4,7 +4,7 @@ import EmployeeDirectory from './components/EmployeeDirectory';
 
 function App() {
   useEffect(() => {
-    console.log({process.env});
+    console.log({"process.env": process.env});
   });
   return (
     <div className="App">
